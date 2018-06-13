@@ -14,7 +14,8 @@ class ScraperUtilsTestCase(APITestCase):
         self.assertIsNotNone(self.html_data)
 
     def test_scrap_data(self):
+        data = scraper_utils.scrap_data()[0]
         self.assertCountEqual(
             ['name', 'details_url', 'thumbnail', 'duration', 'days_showing', 'time_showing', 'details'],
-            scraper_utils.scrap_data()[0]
+            data
         )
