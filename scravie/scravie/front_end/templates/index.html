@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="uk-container">
+        <div class="uk-grid-medium" uk-grid>
+            {% if movies %}
+                {% for movie in movies %}
+                    <div class="uk-margin-medium-left uk-margin-medium-top uk-margin-medium-bottom">
+                        <div class="uk-card uk-card-default">
+                            <div class="uk-card-header">
+                                <div class="uk-grid-small uk-flex-middle uk-grid" uk-grid>
+                                    <div class="uk-width-auto uk-first-column">
+                                        <img data-src="{{movie.thumbnail_url}}" uk-img>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="uk-card-body">
+                                <p>{{ movie.name }}</p>  
+                            </div>
+                            <div class="uk-card-footer">
+                                <a href="#" class="uk-button uk-button-text">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
