@@ -3,21 +3,21 @@
     <div class="uk-container">
         <div class="uk-grid-medium" uk-grid>
             {% if movies %}
-                {% for movie in movies %}
+                {% for movie_info in movies %}
                     <div class="uk-margin-medium-left uk-margin-medium-top uk-margin-medium-bottom">
                         <div class="uk-card uk-card-default">
                             <div class="uk-card-header">
                                 <div class="uk-grid-small uk-flex-middle uk-grid" uk-grid>
                                     <div class="uk-width-auto uk-first-column">
-                                        <img data-src="{{movie.thumbnail_url}}" uk-img>
+                                        <img data-src="{{movie_info.thumbnail_url}}" uk-img>
                                     </div>
                                 </div>
                             </div>
                             <div class="uk-card-body">
-                                <p>{{ movie.name }}</p>  
+                                <p>{{ movie_info.name }}</p>  
                             </div>
                             <div class="uk-card-footer">
-                                <a href="#" class="uk-button uk-button-text">Details</a>
+                                <a href="{% url 'movie-detail' id=movie_info.id %}" class="uk-button uk-button-text">Details</a>
                             </div>
                         </div>
                     </div>
