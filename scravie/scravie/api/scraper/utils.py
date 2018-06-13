@@ -2,6 +2,7 @@ from contextlib import closing
 
 import requests
 
+import scravie.api.scraper.models as scraper_models
 import scravie.api.scraper.serializers as scraper_serializers
 from bs4 import BeautifulSoup
 
@@ -79,9 +80,11 @@ def scrap_data():
 
 def cache_movies():
     movies = scrap_data()
+    scraper_models.Movie.objects.all().delete()
+    scraper_models.Person.objects.all().delete()
     movie_serializer = scraper_serializers.MovieSerializer(data=movies, many=True)
     if movie_serializer.is_valid():
         movie_serializer.save()
-        return movie_serializer.data
+        return "success", movie_serializer.data
     else:
-        return movie_serializer.errors
+        return "error", movie_serializer.errors
