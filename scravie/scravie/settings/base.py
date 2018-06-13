@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'scravie.api.scraper',
+    'scravie.front_end'
 ]
 
 MIDDLEWARE = [
