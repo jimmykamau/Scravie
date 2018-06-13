@@ -2,6 +2,7 @@ from contextlib import closing
 
 import requests
 
+import scravie.api.scraper.serializers as scraper_serializers
 from bs4 import BeautifulSoup
 
 
@@ -29,7 +30,7 @@ def get_movie_info(movie_data):
         "h4", class_="entry-title").contents[0]
     movie_info['name'] = movie_title_data.string
     movie_info['details_url'] = movie_title_data.get('href')
-    movie_info['thumbnail'] = movie_data.find(
+    movie_info['thumbnail_url'] = movie_data.find(
         "img").get('src')
     movie_info['duration'] = movie_data.find(
         "div", class_="entry-date").contents[1]
@@ -47,9 +48,9 @@ def get_movie_details(movie_info):
     if html_data is not None:
         movie_details_data = get_movie_details_data(html_data)
         movie_details = dict()
-        movie_details['banner'] = movie_details_data.find(
+        movie_details['banner_url'] = movie_details_data.find(
             "section", id="amy-page-header").contents[1].get('src')
-        movie_details['thumbnail'] = movie_details_data.find(
+        movie_details['thumbnail_url'] = movie_details_data.find(
             "div", class_="entry-thumb").contents[1].get('src')
         movie_details_info_list = movie_details_data.find(
             "ul", class_="info-list").find_all("li")
@@ -71,6 +72,16 @@ def scrap_data():
         for movie_data in movies_data:
             movie_info = get_movie_info(movie_data)
             movie_details = get_movie_details(movie_info)
-            movie_info['details'] = [movie_details]
+            movie_info['movie_details'] = [movie_details]
             movies_info_list.append(movie_info)
         return movies_info_list
+
+
+def cache_movies():
+    movies = scrap_data()
+    movie_serializer = scraper_serializers.MovieSerializer(data=movies, many=True)
+    if movie_serializer.is_valid():
+        movie_serializer.save()
+        return movie_serializer.data
+    else:
+        return movie_serializer.errors
