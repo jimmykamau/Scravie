@@ -54,9 +54,9 @@ def get_movie_details(movie_info):
         movie_details_info_list = movie_details_data.find(
             "ul", class_="info-list").find_all("li")
         movie_details['actors'] = [
-            actor.text for actor in movie_details_info_list[0].find_all("a")]
+            {"name": actor.text} for actor in movie_details_info_list[0].find_all("a")]
         movie_details['directors'] = [
-            director.text for director in movie_details_info_list[1].find_all("a")]
+            {"name": director.text} for director in movie_details_info_list[1].find_all("a")]
         movie_details['synopsis'] = movie_details_data.find(
             "div", class_=["entry-content", "e-content"]).contents[3].string
         return movie_details
