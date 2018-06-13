@@ -37,12 +37,12 @@ class MovieSerializer(serializers.ModelSerializer):
             actors_model_list = []
             for actor in actors:
                 actor_model, created = scraper_models.Person.objects.get_or_create(
-                    name=actor)
+                    **actor)
                 actors_model_list.append(actor_model)
             directors_model_list = []
             for director in directors:
                 director_model, created = scraper_models.Person.objects.get_or_create(
-                    name=director)
+                    **director)
                 directors_model_list.append(director_model)
             instance.actors.set(actors_model_list)
             instance.directors.set(directors_model_list)
