@@ -24,7 +24,7 @@ class MovieSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = scraper_models.Movie
-        fields = ('name', 'details_url', 'thumbnail_url',
+        fields = ('id', 'name', 'details_url', 'thumbnail_url',
                   'duration', 'days_showing', 'time_showing', 'movie_details')
 
     def create(self, validated_data):
