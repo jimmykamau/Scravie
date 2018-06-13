@@ -8,6 +8,7 @@ django = "*"
 djangorestframework = "*"
 "beautifulsoup4" = "*"
 requests = "*"
+django-filter = "*"
 
 [dev-packages]
 
