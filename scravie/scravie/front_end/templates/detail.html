@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block body %}
+    {% if movie %}
+        {% for detail in movie.movie_details %}
+            <img src="{{ detail.banner_url }}">
+            <div class="uk-container uk-margin-medium-bottom">
+                <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2 uk-margin uk-grid" uk-grid>
+                    <div class="uk-card-media-left uk-cover-container uk-first-column">
+                        <img src="{{ detail.thumbnail_url }}" uk-cover class="uk-cover" style="width: 360; height: 618;">
+                        <canvas width="360" height="618"></canvas>
+                    </div>
+                    <div>
+                        <div class="uk-card-body">
+                            <h3 class="uk-card-title">
+                               {{ movie.name }}
+                            </h3>
+                            <p>
+                                {{ detail.synopsis }}
+                            </p>
+                            <ul uk-accordion class="uk-accordion">
+                                <li class="uk-open">
+                                    <a href="#" class="uk-accordion-title">Cast</a>
+                                    <div class="uk-accordion-content">
+                                        {% for actor in detail.actors %}
+                                            <p>{{ actor.name }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <a href="#" class="uk-accordion-title">Directors</a>
+                                    <div class="uk-accordion-content">
+                                        {% for director in detail.directors%}
+                                            <p>{{ director.name }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <a href="#" class="uk-accordion-title">Duration</a>
+                                    <div class="uk-accordion-content">
+                                        <p>{{ movie.duration }}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a href="#" class="uk-accordion-title">Show time</a>
+                                    <div class="uk-accordion-content">
+                                        <p><b>{{ movie.days_showing }}: </b>{{ movie.time_showing }}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
