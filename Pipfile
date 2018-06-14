@@ -10,6 +10,8 @@ djangorestframework = "*"
 requests = "*"
 django-filter = "*"
 gunicorn = "*"
+dj-database-url = "*"
+"psycopg2" = "*"
 
 [dev-packages]
 
