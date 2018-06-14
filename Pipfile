@@ -9,6 +9,7 @@ djangorestframework = "*"
 "beautifulsoup4" = "*"
 requests = "*"
 django-filter = "*"
+gunicorn = "*"
 
 [dev-packages]
 
