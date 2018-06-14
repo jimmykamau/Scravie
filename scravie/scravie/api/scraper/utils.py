@@ -1,4 +1,5 @@
 from contextlib import closing
+import sqlite3
 
 import requests
 
@@ -80,8 +81,13 @@ def scrap_data():
 
 def cache_movies():
     movies = scrap_data()
-    scraper_models.Movie.objects.all().delete()
-    scraper_models.Person.objects.all().delete()
+    try:
+        scraper_models.Movie.objects.all().delete()
+        scraper_models.Person.objects.all().delete()
+    except sqlite3.OperationalError:
+        # Mostly happens on first app run
+        pass
+
     movie_serializer = scraper_serializers.MovieSerializer(data=movies, many=True)
     if movie_serializer.is_valid():
         movie_serializer.save()
