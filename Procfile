@@ -1,1 +1,1 @@
-web: gunicorn scravie.scravie.wsgi
+web: gunicorn --pythonpath scravie scravie.wsgi
