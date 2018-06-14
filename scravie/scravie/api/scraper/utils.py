@@ -81,13 +81,10 @@ def scrap_data():
 
 def cache_movies():
     movies = scrap_data()
-    try:
-        scraper_models.Movie.objects.all().delete()
+    movie_models = scraper_models.Movie.objects.all()
+    if movie_models.exists():
+        movie_models.delete()
         scraper_models.Person.objects.all().delete()
-    except sqlite3.OperationalError:
-        # Mostly happens on first app run
-        pass
-
     movie_serializer = scraper_serializers.MovieSerializer(data=movies, many=True)
     if movie_serializer.is_valid():
         movie_serializer.save()
