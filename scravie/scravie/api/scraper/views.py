@@ -1,11 +1,11 @@
-from rest_framework import generics, permissions
-from django_filters.rest_framework import DjangoFilterBackend
-import django.contrib.postgres.search as postgres_search
 import functools
 import operator
 
+import django.contrib.postgres.search as postgres_search
 import scravie.api.scraper.models as scraper_models
 import scravie.api.scraper.serializers as scraper_serializers
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, permissions
 
 
 class ListMovieView(generics.ListAPIView):
@@ -33,7 +33,8 @@ class ListMovieSearchView(generics.ListAPIView):
         queryset = scraper_models.Movie.objects.all()
         search_string = self.request.query_params.get('name', None)
         if search_string is not None:
-            terms = [postgres_search.SearchQuery(term) for term in search_string.split()]
+            terms = [postgres_search.SearchQuery(
+                term) for term in search_string.split()]
             vector = postgres_search.SearchVector('name')
             query = functools.reduce(operator.or_, terms)
             queryset = scraper_models.Movie.objects.annotate(
