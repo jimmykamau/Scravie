@@ -21,4 +21,4 @@ class MovieDetail(models.Model):
     thumbnail_url = models.URLField()
     actors = models.ManyToManyField(Person, related_name='movie_actors')
     directors = models.ManyToManyField(Person, related_name='movie_directors')
-    synopsis = models.TextField()
+    synopsis = models.TextField(null=True)
