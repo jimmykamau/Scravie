@@ -1,11 +1,33 @@
+import calendar
+import datetime
 from contextlib import closing
-import sqlite3
 
 import requests
-
 import scravie.api.scraper.models as scraper_models
 import scravie.api.scraper.serializers as scraper_serializers
 from bs4 import BeautifulSoup
+
+
+def get_airing_timestamps(days, times):
+    today_datetime = datetime.datetime.today()
+    this_year_month = today_datetime.strftime("%Y %m ")
+    days = [item if item != "Thur" and item != "THUR" else "Thu" for item in days.split()]
+    days.remove('-')
+    days = list(map(str.upper, days))
+    days_list = list(map(str.upper, list(calendar.day_abbr)))
+    start_index = days_list.index(days[0])
+    end_index = days_list.index(days[1])
+    days_showing = list()
+    if (start_index > end_index):
+        days_showing = days_list[end_index:] + days_list[:start_index+1]
+    else:
+        days_showing = days_list[start_index:end_index+1]
+    timestamps = list()
+    for day in days_showing:
+        for time in list(map(str.strip, times.split(","))):
+            timestamps.append(datetime.datetime.strptime(
+                this_year_month + day + time, "%Y %m %a%I:%M%p"))
+    return timestamps
 
 
 def get_html_data(url):
@@ -75,6 +97,8 @@ def scrap_data():
             movie_info = get_movie_info(movie_data)
             movie_details = get_movie_details(movie_info)
             movie_info['movie_details'] = [movie_details]
+            get_airing_timestamps(
+                movie_info['days_showing'], movie_info['time_showing'])
             movies_info_list.append(movie_info)
         return movies_info_list
 
@@ -85,7 +109,8 @@ def cache_movies():
     if movie_models.exists():
         movie_models.delete()
         scraper_models.Person.objects.all().delete()
-    movie_serializer = scraper_serializers.MovieSerializer(data=movies, many=True)
+    movie_serializer = scraper_serializers.MovieSerializer(
+        data=movies, many=True)
     if movie_serializer.is_valid():
         movie_serializer.save()
         return "success", movie_serializer.data
