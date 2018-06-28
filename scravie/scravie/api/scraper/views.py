@@ -41,3 +41,15 @@ class ListMovieSearchView(generics.ListAPIView):
                 rank=postgres_search.SearchRank(vector, query)
             ).order_by('-rank').filter(rank__gte=0.06)
         return queryset
+
+
+class ListMovieSortView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = scraper_serializers.MovieSerializer
+
+    def get_queryset(self):
+        queryset = scraper_models.Movie.objects.all()
+        sort_by = self.request.query_params.get('sort_by', None)
+        if sort_by is not None:
+            queryset = queryset.order_by(sort_by)
+        return queryset
