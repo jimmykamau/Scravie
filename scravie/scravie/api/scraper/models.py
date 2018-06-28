@@ -22,3 +22,10 @@ class MovieDetail(models.Model):
     actors = models.ManyToManyField(Person, related_name='movie_actors')
     directors = models.ManyToManyField(Person, related_name='movie_directors')
     synopsis = models.TextField(null=True)
+
+
+class TimesShowing(models.Model):
+    movie = models.ForeignKey(
+        Movie, related_name='times_showing', on_delete=models.CASCADE
+    )
+    time_showing = models.DateTimeField()
