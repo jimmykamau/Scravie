@@ -1,11 +1,15 @@
 import functools
 import operator
+import datetime
 
 import django.contrib.postgres.search as postgres_search
 import scravie.api.scraper.models as scraper_models
 import scravie.api.scraper.serializers as scraper_serializers
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status, views
+from rest_framework.response import Response
+from django.db.models import Min
+from django.db.models.functions import TruncMinute
 
 
 class ListMovieView(generics.ListAPIView):
@@ -53,3 +57,25 @@ class ListMovieSortView(generics.ListAPIView):
         if sort_by is not None:
             queryset = queryset.order_by(sort_by)
         return queryset
+
+
+class ListMovieSortDatetimeView(generics.GenericAPIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        date_showing = self.kwargs['date']
+        date_time_showing = datetime.datetime.strptime(date_showing, "%Y-%m-%d")
+        queryset = scraper_models.TimesShowing.objects.filter(
+            time_showing__date=date_time_showing).distinct()
+        timings = dict()
+        while queryset:
+            earliest_time = queryset.annotate(
+                screen_start_minute=TruncMinute('time_showing')).aggregate(
+                    Min('screen_start_minute'))['screen_start_minute__min']
+            earliest_screenings = queryset.filter(time_showing__time=earliest_time.time())
+            timings[datetime.datetime.strftime(earliest_time, "%I:%M%p")] = list()
+            for screening in earliest_screenings:
+                timings[datetime.datetime.strftime(earliest_time, "%I:%M%p")].append(
+                    scraper_serializers.MovieSerializer(screening.movie).data)
+            queryset = queryset.exclude(time_showing__time=earliest_time.time())
+        return Response({"data": timings}, status=status.HTTP_200_OK)
