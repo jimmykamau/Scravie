@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
+{% include 'navbar.html' %}
     {% if movie %}
         {% for detail in movie.movie_details %}
             <img src="{{ detail.banner_url }}">

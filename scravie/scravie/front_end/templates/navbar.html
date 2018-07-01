@@ -1,0 +1,30 @@
+<nav class="uk-navbar-container" uk-navbar>
+
+    <div class="uk-navbar-left">
+
+        <ul class="uk-navbar-nav">
+            <li><a href="/movie/">Home</a></li>
+            <li><a href="/movie/sort-by-name/">Filter by name</a></li>
+        </ul>
+
+    </div>
+
+    <div class="uk-navbar-right">
+
+        <div class="uk-navbar-item">
+            <form class="uk-search uk-search-navbar" method="post" action="/movie/date-filter/">
+                {% csrf_token %}
+                <input class="uk-search-input" type="search" placeholder="YYYY-MM-DD" name="date_query">
+            </form>
+        </div>
+        <div class="uk-navbar-item">
+            <form class="uk-search uk-search-navbar" method="post" action="/movie/">
+                {% csrf_token %}
+                <span uk-search-icon></span>
+                <input class="uk-search-input" type="search" placeholder="Search..." name="search_query">
+            </form>
+        </div>
+
+    </div>
+
+</nav>
