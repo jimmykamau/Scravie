@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block body %}
+{% include 'navbar.html' %}
     <div class="uk-container">
         <div class="uk-grid-medium" uk-grid>
+            {% if search_string %}
+            <div class="uk-width-1-1">
+                <h3>Showing results for: {{ search_string }}</h3>
+            </div>   
+            {% endif %}
             {% if movies %}
                 {% for movie_info in movies %}
                     <div class="uk-margin-medium-left uk-margin-medium-top uk-margin-medium-bottom">
@@ -22,6 +28,10 @@
                         </div>
                     </div>
                 {% endfor %}
+            {% else %}
+                <div class="uk-width-1-1">
+                    <h3>No movies to show</h3>
+                </div>   
             {% endif %}
         </div>
     </div>
