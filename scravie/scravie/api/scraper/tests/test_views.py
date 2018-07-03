@@ -87,7 +87,7 @@ class ListMovieSortDatetimeViewTest(APITestCase):
         self.assertEqual(200, response.status_code)
         times_list = response.data['data'].keys()
         timestamp_list = [datetime.datetime.strptime(
-            timestamp, "%I:%M%p") for timestamp in times_list]
+            timestamp, "%I:%M %p") for timestamp in times_list]
         self.assertEqual(
             sorted(timestamp_list), timestamp_list
         )
