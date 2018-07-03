@@ -18,7 +18,8 @@ class ScraperUtilsTestCase(APITestCase):
         data = scraper_utils.scrap_data()[0]
         self.assertCountEqual(
             ['name', 'details_url', 'thumbnail_url', 'duration',
-                'days_showing', 'time_showing', 'movie_details'],
+                'days_showing', 'time_showing',
+                'movie_details', 'times_showing'],
             data
         )
 
