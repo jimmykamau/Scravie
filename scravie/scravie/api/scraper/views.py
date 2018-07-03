@@ -1,15 +1,15 @@
+import datetime
 import functools
 import operator
-import datetime
 
 import django.contrib.postgres.search as postgres_search
 import scravie.api.scraper.models as scraper_models
 import scravie.api.scraper.serializers as scraper_serializers
+from django.db.models import Min
+from django.db.models.functions import TruncMinute
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
-from django.db.models import Min
-from django.db.models.functions import TruncMinute
 
 
 class ListMovieView(generics.ListAPIView):
@@ -64,7 +64,8 @@ class ListMovieSortDatetimeView(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         date_showing = self.kwargs['date']
-        date_time_showing = datetime.datetime.strptime(date_showing, "%Y-%m-%d")
+        date_time_showing = datetime.datetime.strptime(
+            date_showing, "%Y-%m-%d")
         queryset = scraper_models.TimesShowing.objects.filter(
             time_showing__date=date_time_showing).distinct()
         timings = dict()
@@ -72,10 +73,14 @@ class ListMovieSortDatetimeView(generics.GenericAPIView):
             earliest_time = queryset.annotate(
                 screen_start_minute=TruncMinute('time_showing')).aggregate(
                     Min('screen_start_minute'))['screen_start_minute__min']
-            earliest_screenings = queryset.filter(time_showing__time=earliest_time.time())
-            timings[datetime.datetime.strftime(earliest_time, "%I:%M%p")] = list()
+            earliest_screenings = queryset.filter(
+                time_showing__time=earliest_time.time())
+            earliest_time_string = datetime.datetime.strftime(
+                earliest_time, "%I:%M %p")
+            timings[earliest_time_string] = list()
             for screening in earliest_screenings:
-                timings[datetime.datetime.strftime(earliest_time, "%I:%M%p")].append(
+                timings[earliest_time_string].append(
                     scraper_serializers.MovieSerializer(screening.movie).data)
-            queryset = queryset.exclude(time_showing__time=earliest_time.time())
+            queryset = queryset.exclude(
+                time_showing__time=earliest_time.time())
         return Response({"data": timings}, status=status.HTTP_200_OK)
