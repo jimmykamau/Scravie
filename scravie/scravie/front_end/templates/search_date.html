@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block body %}
+{% include 'navbar.html' %}
+    <div class="uk-container">
+        <div class="uk-grid-medium" uk-grid>
+            <div class="uk-width-1-1">
+                <h1>Movies showing on {{ show_date }}</h1>
+            </div>
+            {% if timings %}
+                {% for data, times in timings.items %}
+                    <ul uk-accordion class="uk-accordion">
+                        {% for time, movies in times.items %}
+                        <li>
+                            <a href="#" class="uk-accordion-title">{{ time }}</a>
+                            <div class="uk-accordion-content">
+                                {% for movie_info in movies %}
+                                    <div class="uk-margin-medium-left uk-margin-medium-top uk-margin-medium-bottom">
+                                        <div class="uk-card uk-card-default">
+                                            <div class="uk-card-header">
+                                                <div class="uk-grid-small uk-flex-middle uk-grid" uk-grid>
+                                                    <div class="uk-width-auto uk-first-column">
+                                                        <img data-src="{{movie_info.thumbnail_url}}" uk-img>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="uk-card-body">
+                                                <p>{{ movie_info.name }}</p>  
+                                            </div>
+                                            <div class="uk-card-footer">
+                                                <a href="{% url 'movie-detail' id=movie_info.id %}" class="uk-button uk-button-text">Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
